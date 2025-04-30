@@ -99,7 +99,7 @@ const submit = () => {
 
                 <Separator />
 
-                <div class="text-muted-foreground text-center text-sm">
+                <div class="text-muted-foreground text-center">
                     Tidak memiliki akun?
                     <RouterLink :to="{ name: 'register' }" :tabindex="4" class="text-primary font-semibold hover:underline">Daftar</RouterLink>
                 </div>

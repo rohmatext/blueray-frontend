@@ -58,13 +58,13 @@ const submit = () => {
                 <BlockStack class="gap-2">
                     <Label for="name">Nama lengkap</Label>
                     <Input id="name" type="text" :tabindex="1" autofocus v-model="form.name" />
-                    <InputError />
+                    <InputError :message="errors.name" />
                 </BlockStack>
 
                 <BlockStack class="gap-2">
                     <Label for="email">Email</Label>
                     <Input id="email" type="email" :tabindex="2" v-model="form.email" />
-                    <InputError />
+                    <InputError :message="errors.email" />
                 </BlockStack>
 
                 <BlockStack class="gap-2">
@@ -89,7 +89,7 @@ const submit = () => {
                             <EyeOffIcon v-else />
                         </Button>
                     </div>
-                    <InputError />
+                    <InputError :message="errors.password" />
                 </BlockStack>
 
                 <BlockStack class="gap-2">
@@ -115,7 +115,7 @@ const submit = () => {
                             <EyeOffIcon v-else />
                         </Button>
                     </div>
-                    <InputError />
+                    <InputError :message="errors.password_confirmation" />
                 </BlockStack>
 
                 <BlockStack class="gap-2">
@@ -127,7 +127,7 @@ const submit = () => {
 
                 <Separator />
 
-                <div class="text-muted-foreground text-center text-sm">
+                <div class="text-muted-foreground text-center">
                     Sudah memiliki akun?
                     <RouterLink :to="{ name: 'login' }" :tabindex="6" class="text-primary font-semibold hover:underline">Masuk</RouterLink>
                 </div>
