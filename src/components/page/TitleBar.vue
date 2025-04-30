@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { NavRoute } from '@/types';
 import { ArrowLeft } from 'lucide-vue-next';
 
 interface TitleBarProps {
     action?: any;
     title?: string;
     subtitle?: string;
-    navigation?: string;
+    navigation?: string | NavRoute;
 }
 
 const props = defineProps<TitleBarProps>();
