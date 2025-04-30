@@ -19,7 +19,7 @@ export interface Role {
 
 export interface ApiResponse<T = unknown> {
     data: T;
-    messsage: string;
+    message: string;
     [key: string]: unknown;
 }
 
@@ -52,6 +52,12 @@ export interface FormHandler<T> {
 export interface NavItem {
     label: string;
     icon?: LucideIcon;
-    to: string | NavItemTo;
+    to: string | NavRoute;
     active: (route: RouteLocationNormalizedLoaded) => boolean;
+}
+
+export interface NavRoute {
+    name: string;
+    params?: Record<string, string>;
+    query?: Record<string, string>;
 }

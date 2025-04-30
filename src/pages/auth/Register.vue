@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import Loader from '@/components/Loader.vue';
+import { BlockStack } from '@/components/page';
 import { Button } from '@/components/ui/button';
 import { Input, InputError } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { BlockStack } from '@/components/ui/page';
 import { Separator } from '@/components/ui/separator';
 import AuthLayout from '@/layouts/AuthLayout.vue';
 import { useAuthStore } from '@/stores/auth';

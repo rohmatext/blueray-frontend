@@ -1,3 +1,5 @@
+import EditUser from '@/pages/admin/users/EditUser.vue';
+import ManageUser from '@/pages/admin/users/ManageUser.vue';
 import Dashboard from '@/pages/Dashboard.vue';
 
 export const AdminRoutes = [
@@ -22,7 +24,13 @@ export const AdminRoutes = [
     {
         path: '/admin/users',
         name: 'admin.users',
-        component: Dashboard,
+        component: ManageUser,
+        meta: { guard: 'auth', role: 'admin' },
+    },
+    {
+        path: '/admin/users/:id',
+        name: 'admin.users.edit',
+        component: EditUser,
         meta: { guard: 'auth', role: 'admin' },
     },
 ];
