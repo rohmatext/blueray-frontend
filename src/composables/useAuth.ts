@@ -5,45 +5,55 @@ import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import { computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 
-interface UseAuthOptions {
-    guard?: 'auth' | 'guest';
-    redirectIfAuthenticated?: string;
-}
-
-interface LoginForm {
+/**
+ * Form Types
+ */
+type LoginForm = {
     email: string;
     password: string;
-    setErrors: (errors: Record<string, string[]>) => void;
-    isLoading: (loading: boolean) => void;
-}
+};
 
-interface RegisterForm {
+type RegisterForm = {
     name: string;
     email: string;
     password: string;
     password_confirmation: string;
-    setErrors: (errors: Record<string, string[]>) => void;
-    isLoading: (loading: boolean) => void;
-}
+};
 
-export const useAuth = ({ guard, redirectIfAuthenticated }: UseAuthOptions) => {
+type ValidationErrors = Record<string, string[]>;
+
+type FormHandler<T> = {
+    data: T;
+    setErrors: (errors: ValidationErrors) => void;
+    setLoading: (loading: boolean) => void;
+    onSuccess?: () => void;
+    onError?: (err: unknown) => void;
+};
+
+/**
+ * Auth Composable
+ */
+export const useAuth = () => {
     const auth = useAuthStore();
     const router = useRouter();
     const queryClient = useQueryClient();
 
+    /**
+     * Fetch authenticated user
+     */
     const fetchUser = async (): Promise<User | undefined> => {
         try {
             const { data } = await axios.get<ApiResponse<User>>('api/profile');
             return data.data;
         } catch (error: any) {
-            if (error.response?.status !== 409) throw error; // Validasi error
+            if (error.response?.status !== 409) throw error;
         }
     };
 
     const {
         data: user,
         error,
-        isLoading,
+        isLoading: isLoadingUser,
     } = useQuery({
         queryKey: ['user'],
         queryFn: fetchUser,
@@ -52,39 +62,48 @@ export const useAuth = ({ guard, redirectIfAuthenticated }: UseAuthOptions) => {
         staleTime: 1000 * 60 * 5,
     });
 
-    const login = async ({ setErrors, isLoading: setLoading, ...form }: LoginForm) => {
+    /**
+     * Generic form handler
+     */
+    const handleForm = async <T extends Record<string, unknown>>(
+        url: string,
+        { data, onSuccess, onError, setErrors, setLoading }: FormHandler<T>,
+    ) => {
         setLoading(true);
+        setErrors({});
 
         try {
-            const { data } = await axios.post('api/login', form);
+            await axios.post(url, data);
             queryClient.invalidateQueries({ queryKey: ['user'] });
+            onSuccess?.();
         } catch (err: any) {
             if (err.response?.status === 422) {
                 setErrors(err.response.data.errors);
             } else {
-                console.error('Login failed:', err);
+                console.error('Failed submitting form:', err);
+                onError?.(err);
             }
         } finally {
             setLoading(false);
         }
     };
 
-    const register = async ({ setErrors, isLoading: setLoading, ...props }: RegisterForm) => {
-        setLoading(true);
-        setErrors({}); // Reset errors
+    const login = (form: FormHandler<LoginForm>) => {
+        handleForm<LoginForm>('api/login', {
+            ...form,
+            onSuccess: () => {
+                router.push({ name: 'dashboard' });
+            },
+        });
+    };
 
-        try {
-            await axios.post('api/register', props);
-            router.push({ name: 'login', query: { registered: 'true' } });
-        } catch (err: any) {
-            if (err.response?.status === 422) {
-                setErrors(err.response.data.errors);
-            } else {
-                console.error('Registration failed:', err);
-            }
-        } finally {
-            setLoading(false);
-        }
+    const register = (form: FormHandler<RegisterForm>) => {
+        handleForm<RegisterForm>('api/register', {
+            ...form,
+            onSuccess: () => {
+                router.push({ name: 'login', query: { registered: 'true' } });
+            },
+        });
     };
 
     const logout = async () => {
@@ -99,15 +118,9 @@ export const useAuth = ({ guard, redirectIfAuthenticated }: UseAuthOptions) => {
         }
     };
 
-    watch(
-        () => [user.value, error],
-        ([u, err]) => {
-            if (guard === 'guest' && u) router.push({ name: redirectIfAuthenticated || 'home' });
-            if (guard === 'auth' && err) logout();
-        },
-        { immediate: true },
-    );
-
+    /**
+     * Sync with pinia store
+     */
     watch(user, (newUser) => {
         if (newUser) {
             auth.setUser(newUser);
@@ -116,9 +129,10 @@ export const useAuth = ({ guard, redirectIfAuthenticated }: UseAuthOptions) => {
 
     return {
         user: computed(() => user.value || null),
+        error,
         login,
         register,
         logout,
-        isLoading,
+        isLoadingUser,
     };
 };
