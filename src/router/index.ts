@@ -63,9 +63,9 @@ router.beforeEach((to, from, next) => {
 
     const isAuthenticated = !!auth.user;
     const roles = (auth.user?.roles as Role[]) || [];
-    const isAuthorized = !!roles.find((r: Role) => r.name === to.meta.role);
+    const isAuthorized = roles.some((r: Role) => r.name === to.meta.role);
 
-    if (isAuthenticated && to.meta.role && isAuthorized) {
+    if (isAuthenticated && to.meta.role && !isAuthorized) {
         return next({ name: 'not-found' });
     }
 

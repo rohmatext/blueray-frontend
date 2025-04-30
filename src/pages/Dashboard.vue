@@ -18,6 +18,7 @@ const route = useRoute();
             <div>
                 <Button @click="handleLogout">Logout</Button>
             </div>
+            {{ route.name }}
         </div>
     </AppLayout>
 </template>

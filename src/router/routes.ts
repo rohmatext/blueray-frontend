@@ -1,8 +1,9 @@
-import About from '@/pages/About.vue';
 import Login from '@/pages/auth/Login.vue';
 import Register from '@/pages/auth/Register.vue';
 import Dashboard from '@/pages/Dashboard.vue';
 import NotFound from '@/pages/NotFound.vue';
+import { AdminRoutes } from './admin';
+import { UserRoutes } from './user';
 
 const routes = [
     {
@@ -28,12 +29,8 @@ const routes = [
         component: Dashboard,
         meta: { guard: 'auth' },
     },
-    {
-        path: '/about',
-        name: 'about',
-        component: About,
-        meta: { guard: 'auth' },
-    },
+    ...UserRoutes,
+    ...AdminRoutes,
     {
         path: '/:pathMatch(.*)*',
         name: 'not-found',

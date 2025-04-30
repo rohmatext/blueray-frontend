@@ -1,16 +1,19 @@
 <script setup lang="ts">
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
-import menu from '@/layouts/app/menu-admin';
+import useAdminMenu from '@/composables/menus/useAdminMenu';
+import useUserMenu from '@/composables/menus/useUserMenu';
 import { useAuthStore } from '@/stores/auth';
 import { NavItem, Role } from '@/types';
 import AppLogo from './AppLogo.vue';
 import NavMain from './NavMain.vue';
 import NavUser from './NavUser.vue';
 
-const mainNavItems: NavItem[] = menu;
-
 const { user } = useAuthStore();
-console.log((user?.roles as Role[]).at(0)?.name);
+
+const roles: Role[] = user?.roles as Role[];
+const currentRole = roles.at(0)?.name as string;
+
+const mainNavItems: NavItem[] = currentRole === 'admin' ? useAdminMenu() : useUserMenu();
 </script>
 
 <template>
