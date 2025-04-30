@@ -2,9 +2,11 @@
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import axios from '@/lib/axios';
+import { useAuthStore } from '@/stores/auth';
 import { User } from '@/types';
 import { ref, watch } from 'vue';
 
+const auth = useAuthStore();
 const user = defineModel<User>();
 const open = ref<boolean>(!!user.value);
 
@@ -23,7 +25,11 @@ const confirmDelete = () => {
     if (!user.value) return;
 
     axios
-        .delete(`/api/users/${user.value.id}`)
+        .delete(`/api/users/${user.value.id}`, {
+            headers: {
+                Authorization: `Bearer ${auth.token}`,
+            },
+        })
         .then((res) => {
             emit('onSuccess', res.data.message);
         })

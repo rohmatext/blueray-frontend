@@ -40,7 +40,11 @@ onMounted(() => {
 const submit = () => {
     isLoading.value = true;
     axios
-        .patch(`/api/profile`, form)
+        .patch(`/api/profile`, form, {
+            headers: {
+                Authorization: `Bearer ${auth.token}`,
+            },
+        })
         .then((res) => {
             toast.success(res.data.message);
             auth.setUser({ ...auth.user, ...res.data.data });

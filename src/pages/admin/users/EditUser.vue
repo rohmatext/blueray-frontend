@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
 import axios from '@/lib/axios';
 import FormSkeleton from '@/pages/admin/users/skeleton/FormSkeleton.vue';
+import { useAuthStore } from '@/stores/auth';
 import { ValidationErrors } from '@/types';
 import { useQueryClient } from '@tanstack/vue-query';
 import { useHead } from '@unhead/vue';
@@ -24,6 +25,7 @@ useHead({
     title: 'Edit Pengguna',
 });
 
+const auth = useAuthStore();
 const route = useRoute();
 const router = useRouter();
 const queryClient = useQueryClient();
@@ -42,7 +44,11 @@ const fetchUser = () => {
 
     isPageLoading.value = true;
     axios
-        .get(`/api/users/${route.params.id}`)
+        .get(`/api/users/${route.params.id}`, {
+            headers: {
+                Authorization: `Bearer ${auth.token}`,
+            },
+        })
         .then((res) => {
             form.name = res.data.data.name;
             form.email = res.data.data.email;
@@ -62,7 +68,11 @@ onMounted(() => {
 const submit = () => {
     isLoading.value = true;
     axios
-        .patch(`/api/users/${route.params.id}`, form)
+        .patch(`/api/users/${route.params.id}`, form, {
+            headers: {
+                Authorization: `Bearer ${auth.token}`,
+            },
+        })
         .then((res) => {
             router.push({ name: 'admin.users' });
             toast.success(res.data.message);

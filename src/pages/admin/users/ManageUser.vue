@@ -12,6 +12,7 @@ import axios from '@/lib/axios';
 import { formatDate } from '@/lib/format-date';
 import DeleteDialog from '@/pages/admin/users/DeleteDialog.vue';
 import TableSkeleton from '@/pages/admin/users/skeleton/TableSkeleton.vue';
+import { useAuthStore } from '@/stores/auth';
 import { ApiResponse, User } from '@/types';
 import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import { useHead } from '@unhead/vue';
@@ -25,6 +26,7 @@ useHead({
     title: 'Pengguna',
 });
 
+const auth = useAuthStore();
 const search = ref<string>('');
 const userSelected = ref<User>();
 const queryClient = useQueryClient();
@@ -32,6 +34,9 @@ const queryClient = useQueryClient();
 const fetchUsers = async (): Promise<User[] | undefined> => {
     try {
         const response = await axios.get<ApiResponse<User[]>>('/api/users', {
+            headers: {
+                Authorization: `Bearer ${auth.token}`,
+            },
             params: {
                 search: search.value.length > 0 ? search.value : undefined,
             },

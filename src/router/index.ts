@@ -65,6 +65,10 @@ router.beforeEach((to, from, next) => {
     const roles = (auth.user?.roles as Role[]) || [];
     const isAuthorized = roles.some((r: Role) => r.name === to.meta.role);
 
+    if (isAuthenticated && to.path === '/dashboard') {
+        return next({ name: roles.at(0)?.name });
+    }
+
     if (isAuthenticated && to.meta.role && !isAuthorized) {
         return next({ name: 'not-found' });
     }
