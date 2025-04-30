@@ -1,19 +1,32 @@
 <script setup lang="ts">
+import Loader from '@/components/Loader.vue';
 import { Button } from '@/components/ui/button';
 import { Input, InputError } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { BlockStack } from '@/components/ui/page';
 import { Separator } from '@/components/ui/separator';
 import AuthLayout from '@/layouts/AuthLayout.vue';
+import { useAuthStore } from '@/stores/auth';
+import { ValidationErrors } from '@/types';
 import { useHead } from '@unhead/vue';
 import { EyeIcon, EyeOffIcon } from 'lucide-vue-next';
-import { reactive } from 'vue';
-import { RouterLink, useRouter } from 'vue-router';
-
-const router = useRouter();
+import { reactive, ref } from 'vue';
+import { RouterLink } from 'vue-router';
 
 useHead({
     title: 'Daftar',
+});
+
+const auth = useAuthStore();
+
+const errors = ref<ValidationErrors>({});
+const isLoading = ref<boolean>(false);
+
+const form = reactive({
+    name: '',
+    email: '',
+    password: '',
+    password_confirmation: '',
 });
 
 const visiblePassword = reactive({
@@ -30,7 +43,12 @@ const togglePasswordConfirmation = () => {
 };
 
 const submit = () => {
-    // Handle form submission
+    auth.register({
+        data: form,
+        setErrors: (val) => (errors.value = val),
+        setLoading: (val) => (isLoading.value = val),
+        onError: (err) => console.error('Login failed:', err),
+    });
 };
 </script>
 <template>
@@ -39,20 +57,26 @@ const submit = () => {
             <BlockStack>
                 <BlockStack class="gap-2">
                     <Label for="name">Nama lengkap</Label>
-                    <Input id="name" type="text" autofocus :tabindex="1" />
+                    <Input id="name" type="text" :tabindex="1" autofocus v-model="form.name" />
                     <InputError />
                 </BlockStack>
 
                 <BlockStack class="gap-2">
                     <Label for="email">Email</Label>
-                    <Input id="email" type="email" autofocus :tabindex="2" />
+                    <Input id="email" type="email" :tabindex="2" v-model="form.email" />
                     <InputError />
                 </BlockStack>
 
                 <BlockStack class="gap-2">
                     <Label for="password">Kata sandi</Label>
                     <div class="relative">
-                        <Input id="password" class="pr-8" :type="visiblePassword.password ? 'text' : 'password'" autofocus :tabindex="3" />
+                        <Input
+                            id="password"
+                            class="pr-8"
+                            :type="visiblePassword.password ? 'text' : 'password'"
+                            :tabindex="3"
+                            v-model="form.password"
+                        />
                         <Button
                             type="button"
                             variant="ghost"
@@ -77,6 +101,7 @@ const submit = () => {
                             :type="visiblePassword.password_confirmation ? 'text' : 'password'"
                             autofocus
                             :tabindex="4"
+                            v-model="form.password_confirmation"
                         />
                         <Button
                             type="button"
@@ -94,7 +119,10 @@ const submit = () => {
                 </BlockStack>
 
                 <BlockStack class="gap-2">
-                    <Button :tabindex="5">Daftar</Button>
+                    <Button :tabindex="5" type="submit" :disabled="isLoading">
+                        <Loader :is-loading="isLoading" />
+                        Daftar
+                    </Button>
                 </BlockStack>
 
                 <Separator />

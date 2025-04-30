@@ -1,6 +1,7 @@
 import About from '@/pages/About.vue';
-import Login from '@/pages/Auth/Login.vue';
-import Register from '@/pages/Auth/Register.vue';
+import Login from '@/pages/auth/Login.vue';
+import Register from '@/pages/auth/Register.vue';
+import Dashboard from '@/pages/Dashboard.vue';
 import NotFound from '@/pages/NotFound.vue';
 
 const routes = [
@@ -20,6 +21,12 @@ const routes = [
         name: 'register',
         component: Register,
         meta: { guard: 'guest' },
+    },
+    {
+        path: '/dashboard',
+        name: 'dashboard',
+        component: Dashboard,
+        meta: { guard: 'auth' },
     },
     {
         path: '/about',

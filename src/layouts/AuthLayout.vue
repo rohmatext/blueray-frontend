@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AppLogo from '@/components/AppLogo.vue';
 import { RouterLink } from 'vue-router';
 
 defineProps<{
@@ -14,7 +15,7 @@ defineProps<{
                 <div class="flex flex-col items-center gap-4">
                     <RouterLink to="/" class="flex flex-col items-center gap-2">
                         <div class="mb-1 flex size-9 items-center justify-center rounded-md">
-                            <img src="/vite.svg" alt="Logo" class="size-8" />
+                            <AppLogo class="size-8" />
                         </div>
                         <span class="sr-only">
                             {{ title }}

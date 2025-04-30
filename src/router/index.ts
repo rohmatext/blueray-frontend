@@ -1,7 +1,7 @@
 import routes from '@/router/routes';
 import { useAuthStore } from '@/stores/auth';
-import { Role } from '@/types';
-import { useQueryClient } from '@tanstack/vue-query';
+import { Role, User } from '@/types';
+import { useSessionStorage } from '@vueuse/core';
 import { createRouter, createWebHistory } from 'vue-router';
 
 const router = createRouter({
@@ -12,13 +12,39 @@ const router = createRouter({
 /*
  * guard route middleware
  */
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
     const auth = useAuthStore();
-    const queryClient = useQueryClient();
+    let user: User | null = auth.user;
+
+    /**
+     * Check if token is valid
+     */
+    if (auth.token && !auth.check()) {
+        auth.setUser(null);
+        auth.setToken(null);
+        console.log('token expired');
+        return next({ name: 'login' });
+    }
+
+    /**
+     * Initialize user
+     */
+    if (!user && auth.token) {
+        try {
+            user = await auth.initUser();
+            auth.setUser(user);
+        } catch {
+            auth.setUser(null);
+            auth.setToken(null);
+        }
+    }
+
+    /**
+     * Check if user is authenticated
+     */
     const isAuthenticated = !!auth.user;
 
     if (!isAuthenticated && to.meta.guard === 'auth') {
-        queryClient.removeQueries({ queryKey: ['user'] });
         return next({ name: 'login' });
     }
 
@@ -34,14 +60,26 @@ router.beforeEach((to, from, next) => {
  */
 router.beforeEach((to, from, next) => {
     const auth = useAuthStore();
-    const isAuthenticated = !!auth.user;
-    const role: string | undefined = (auth.user?.roles as Role[])?.[0]?.name;
 
-    if (isAuthenticated && to.meta.role && role !== to.meta.role) {
+    const isAuthenticated = !!auth.user;
+    const roles = (auth.user?.roles as Role[]) || [];
+    const isAuthorized = !!roles.find((r: Role) => r.name === to.meta.role);
+
+    if (isAuthenticated && to.meta.role && isAuthorized) {
         return next({ name: 'not-found' });
     }
 
     next();
+});
+
+/*
+ * Check if user is registered
+ */
+router.isReady().then(() => {
+    const isRegistered = useSessionStorage('registered', true);
+    if (isRegistered.value) {
+        isRegistered.value = false;
+    }
 });
 
 export default router;
