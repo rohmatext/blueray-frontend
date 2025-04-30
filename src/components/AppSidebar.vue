@@ -23,7 +23,7 @@ const mainNavItems: NavItem[] = currentRole === 'admin' ? useAdminMenu() : useUs
                 <SidebarMenuItem>
                     <SidebarMenuButton class="py-5">
                         <RouterLink :to="{ name: 'dashboard' }" class="inline-block w-full">
-                            <AppLogo class="size-8" />
+                            <AppLogo class="size-6" />
                         </RouterLink>
                     </SidebarMenuButton>
                 </SidebarMenuItem>

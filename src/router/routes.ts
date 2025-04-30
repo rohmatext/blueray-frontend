@@ -32,6 +32,18 @@ const routes = [
     ...UserRoutes,
     ...AdminRoutes,
     {
+        path: '/settings/account',
+        name: 'settings.account',
+        component: Dashboard,
+        meta: { guard: 'auth' },
+    },
+    {
+        path: '/settings/password',
+        name: 'settings.password',
+        component: Dashboard,
+        meta: { guard: 'auth' },
+    },
+    {
         path: '/:pathMatch(.*)*',
         name: 'not-found',
         component: NotFound,

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import AppContent from '@/components/AppContent.vue';
+import AppHeader from '@/components/AppHeader.vue';
 import AppShell from '@/components/AppShell.vue';
 import AppSidebar from '@/components/AppSidebar.vue';
 </script>
@@ -8,7 +9,10 @@ import AppSidebar from '@/components/AppSidebar.vue';
     <AppShell>
         <AppSidebar />
         <AppContent>
-            <slot />
+            <AppHeader />
+            <div class="px-4">
+                <slot />
+            </div>
         </AppContent>
     </AppShell>
 </template>

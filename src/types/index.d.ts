@@ -1,4 +1,5 @@
 import { LucideIcon } from 'lucide-vue-next';
+import { RouteLocationNormalizedLoaded } from 'vue-router';
 
 export interface User {
     id: number;
@@ -51,6 +52,6 @@ export interface FormHandler<T> {
 export interface NavItem {
     label: string;
     icon?: LucideIcon;
-    to: string | { name: string };
-    active: boolean;
+    to: string | NavItemTo;
+    active: (route: RouteLocationNormalizedLoaded) => boolean;
 }

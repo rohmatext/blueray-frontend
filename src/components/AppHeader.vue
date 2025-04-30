@@ -1,15 +1,5 @@
 <script setup lang="ts">
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { NavItem } from '@/types';
-import { LayoutGrid } from 'lucide-vue-next';
-
-const mainNavItems: NavItem[] = [
-    {
-        title: 'Dashboard',
-        href: '/dashboard',
-        icon: LayoutGrid,
-    },
-];
 </script>
 
 <template>

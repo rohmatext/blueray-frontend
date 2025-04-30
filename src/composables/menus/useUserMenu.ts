@@ -1,27 +1,26 @@
+import { NavItem } from '@/types';
 import { Inbox, LayoutGrid, MapPin } from 'lucide-vue-next';
-import { useRoute } from 'vue-router';
+import { RouteLocationNormalizedLoaded } from 'vue-router';
 
 const useUserMenu = () => {
-    const route = useRoute();
-    const name = route.name?.toString() || '';
-    const menu = [
+    const menu: NavItem[] = [
         {
             label: 'Dashboard',
             icon: LayoutGrid,
             to: { name: 'user' },
-            active: name === 'user',
+            active: (route: RouteLocationNormalizedLoaded) => route.name === 'user',
         },
         {
             label: 'Pesanan',
             icon: Inbox,
             to: { name: 'user.orders' },
-            active: name.startsWith('user.orders'),
+            active: (route: RouteLocationNormalizedLoaded) => route.name?.toString().startsWith('user.orders') || false,
         },
         {
             label: 'Alamat',
             icon: MapPin,
             to: { name: 'user.addresses' },
-            active: name.startsWith('user.addresses'),
+            active: (route: RouteLocationNormalizedLoaded) => route.name?.toString().startsWith('user.addresses') || false,
         },
     ];
 
