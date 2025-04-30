@@ -2,6 +2,7 @@ import Login from '@/pages/auth/Login.vue';
 import Register from '@/pages/auth/Register.vue';
 import Dashboard from '@/pages/Dashboard.vue';
 import NotFound from '@/pages/NotFound.vue';
+import UpdateProfile from '@/pages/setttings/UpdateProfile.vue';
 import { AdminRoutes } from './admin';
 import { UserRoutes } from './user';
 
@@ -34,7 +35,7 @@ const routes = [
     {
         path: '/settings/account',
         name: 'settings.account',
-        component: Dashboard,
+        component: UpdateProfile,
         meta: { guard: 'auth' },
     },
     {
