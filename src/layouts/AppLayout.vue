@@ -10,7 +10,7 @@ import AppSidebar from '@/components/AppSidebar.vue';
         <AppSidebar />
         <AppContent>
             <AppHeader />
-            <div class="px-4">
+            <div class="px-6">
                 <slot />
             </div>
         </AppContent>

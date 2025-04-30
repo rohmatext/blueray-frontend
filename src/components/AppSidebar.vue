@@ -8,6 +8,7 @@ import AppLogo from './AppLogo.vue';
 import NavMain from './NavMain.vue';
 import NavUser from './NavUser.vue';
 
+const appName = import.meta.env.VITE_APP_NAME || 'Acme';
 const { user } = useAuthStore();
 
 const roles: Role[] = user?.roles as Role[];
@@ -21,9 +22,10 @@ const mainNavItems: NavItem[] = currentRole === 'admin' ? useAdminMenu() : useUs
         <SidebarHeader>
             <SidebarMenu>
                 <SidebarMenuItem>
-                    <SidebarMenuButton class="py-5">
-                        <RouterLink :to="{ name: 'dashboard' }" class="inline-block w-full">
+                    <SidebarMenuButton class="mt-1 py-5" as-child>
+                        <RouterLink :to="{ name: 'dashboard' }" class="flex w-full items-center py-2">
                             <AppLogo class="size-6" />
+                            <h1 class="ml-2 text-lg font-semibold">{{ appName }}</h1>
                         </RouterLink>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
