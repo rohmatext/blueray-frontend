@@ -2,6 +2,7 @@ import Login from '@/pages/auth/Login.vue';
 import Register from '@/pages/auth/Register.vue';
 import Dashboard from '@/pages/Dashboard.vue';
 import NotFound from '@/pages/NotFound.vue';
+import UpdatePassword from '@/pages/setttings/UpdatePassword.vue';
 import UpdateProfile from '@/pages/setttings/UpdateProfile.vue';
 import { AdminRoutes } from './admin';
 import { UserRoutes } from './user';
@@ -41,7 +42,7 @@ const routes = [
     {
         path: '/settings/password',
         name: 'settings.password',
-        component: Dashboard,
+        component: UpdatePassword,
         meta: { guard: 'auth' },
     },
     {
