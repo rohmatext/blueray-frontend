@@ -22,7 +22,6 @@ router.beforeEach(async (to, from, next) => {
     if (auth.token && !auth.check()) {
         auth.setUser(null);
         auth.setToken(null);
-        console.log('token expired');
         return next({ name: 'login' });
     }
 

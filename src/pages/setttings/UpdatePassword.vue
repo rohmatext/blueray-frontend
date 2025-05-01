@@ -51,7 +51,6 @@ const togglePasswordConfirmation = () => {
 };
 
 const submit = handleSubmit(async (values) => {
-    console.log(values);
     try {
         const { data } = await axios.patch('/api/password', values, {
             headers: {

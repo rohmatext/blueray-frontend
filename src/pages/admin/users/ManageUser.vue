@@ -74,7 +74,6 @@ const onDeleteError = (message: string) => {
 watch(
     search,
     useDebounceFn(() => {
-        console.log('search');
         queryClient.invalidateQueries({ queryKey: ['users'] });
     }, 300),
 );
