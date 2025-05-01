@@ -6,6 +6,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
 import axios from '@/lib/axios';
+import DeleteAddressDialog from '@/pages/admin/adresses/DeleteAddressDialog.vue';
 import TableSkeleton from '@/pages/admin/users/skeleton/TableSkeleton.vue';
 import { useAuthStore } from '@/stores/auth';
 import { ApiResponse } from '@/types';
@@ -130,7 +131,7 @@ watch(
                                     </TableCell>
                                 </TableRow>
                             </TableBody>
-                            <TableEmpty v-if="addresses?.length === 0" :colspan="3">Belum ada pengguna</TableEmpty>
+                            <TableEmpty v-if="addresses?.length === 0" :colspan="4">Belum ada alaman</TableEmpty>
                         </Table>
                     </CardContent>
                 </Card>
@@ -138,5 +139,5 @@ watch(
         </Page>
     </AppLayout>
 
-    <!-- <DeleteDialog @onSuccess="onDeleteSuccess" v-model="addressSelected" @onError="onDeleteError" /> -->
+    <DeleteAddressDialog @onSuccess="onDeleteSuccess" v-model="addressSelected" @onError="onDeleteError" />
 </template>
