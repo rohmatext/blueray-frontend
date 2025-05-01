@@ -1,6 +1,8 @@
 import CreateAddress from '@/pages/admin/adresses/CreateAddress.vue';
 import EditAddress from '@/pages/admin/adresses/EditAddress.vue';
 import ManageAddress from '@/pages/admin/adresses/ManageAddress.vue';
+import CreateOrder from '@/pages/admin/orders/CreateOrder.vue';
+import ManageOrder from '@/pages/admin/orders/ManageOrder.vue';
 import EditUser from '@/pages/admin/users/EditUser.vue';
 import ManageUser from '@/pages/admin/users/ManageUser.vue';
 import Dashboard from '@/pages/Dashboard.vue';
@@ -15,7 +17,13 @@ export const AdminRoutes = [
     {
         path: '/admin/orders',
         name: 'admin.orders',
-        component: Dashboard,
+        component: ManageOrder,
+        meta: { guard: 'auth', role: 'admin' },
+    },
+    {
+        path: '/admin/orders/create',
+        name: 'admin.orders.create',
+        component: CreateOrder,
         meta: { guard: 'auth', role: 'admin' },
     },
     {
