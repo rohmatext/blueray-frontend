@@ -144,7 +144,7 @@ onMounted(() => {
                                 <TableBody>
                                     <TableRow v-for="item in items" :key="item.id">
                                         <TableCell>{{ item.name }}</TableCell>
-                                        <TableCell>{{ formatCurrency(item.val) }}</TableCell>
+                                        <TableCell>{{ formatCurrency(item.value) }}</TableCell>
                                         <TableCell>{{ item.quantity }}</TableCell>
                                     </TableRow>
                                 </TableBody>
