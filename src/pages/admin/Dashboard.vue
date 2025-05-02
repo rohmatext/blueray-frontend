@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { BlockStack, Page, TitleBar } from '@/components/page';
 import { Card, CardContent } from '@/components/ui/card';
-import { AreaChart } from '@/components/ui/chart-area';
 import AppLayout from '@/layouts/AppLayout.vue';
 import axios from '@/lib/axios';
 import { useAuthStore } from '@/stores/auth';
@@ -41,7 +40,7 @@ onMounted(fetchStats);
                         </div>
                     </CardContent>
                 </Card>
-                <AreaChart :data="data.stats" index="date" class="rounded-lg border" :categories="['count']" />
+                <!-- <AreaChart :data="data.stats" index="date" class="rounded-lg border" :categories="['count']" /> -->
             </BlockStack>
         </Page>
     </AppLayout>
