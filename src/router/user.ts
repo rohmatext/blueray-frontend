@@ -1,7 +1,7 @@
-import Dashboard from '@/pages/Dashboard.vue';
 import CreateAddress from '@/pages/user/adresses/CreateAddress.vue';
 import EditAddress from '@/pages/user/adresses/EditAddress.vue';
 import ManageAddress from '@/pages/user/adresses/ManageAddress.vue';
+import Dashboard from '@/pages/user/Dashboard.vue';
 import CreateOrder from '@/pages/user/orders/CreateOrder.vue';
 import DetailOrder from '@/pages/user/orders/DetailOrder.vue';
 import ManageOrder from '@/pages/user/orders/ManageOrder.vue';
@@ -10,12 +10,6 @@ export const UserRoutes = [
     {
         path: '/user',
         name: 'user',
-        component: Dashboard,
-        meta: { guard: 'auth', role: 'user' },
-    },
-    {
-        path: '/user/orders',
-        name: 'user.orders',
         component: Dashboard,
         meta: { guard: 'auth', role: 'user' },
     },
