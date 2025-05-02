@@ -113,7 +113,7 @@ onMounted(() => {
                                 <BlockStack class="text-sm sm:flex-row">
                                     <BlockStack class="flex-1 gap-1">
                                         <div class="text-muted-foreground">Alamat Pengiriman</div>
-                                        <div>
+                                        <div class="font-medium">
                                             {{ tracking?.origin?.contact_name }}
                                         </div>
                                         <div>
@@ -122,7 +122,7 @@ onMounted(() => {
                                     </BlockStack>
                                     <BlockStack class="flex-1 gap-1">
                                         <div class="text-muted-foreground">Alamat Penerima</div>
-                                        <div>{{ tracking?.destination?.contact_name }}</div>
+                                        <div class="font-medium">{{ tracking?.destination?.contact_name }}</div>
                                         <div>{{ tracking?.destination?.address }}</div>
                                     </BlockStack>
                                 </BlockStack>
@@ -145,7 +145,7 @@ onMounted(() => {
                                     <TableRow v-for="item in items" :key="item.id">
                                         <TableCell>{{ item.name }}</TableCell>
                                         <TableCell>{{ formatCurrency(item.value) }}</TableCell>
-                                        <TableCell>{{ item.quantity }}</TableCell>
+                                        <TableCell class="w-10">{{ item.quantity }}</TableCell>
                                     </TableRow>
                                 </TableBody>
                             </Table>
