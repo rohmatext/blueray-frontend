@@ -50,6 +50,7 @@ const couriers = ref<Courier[]>([]);
 const addresses = ref<Address[]>();
 
 const { errors, handleSubmit, isSubmitting, setErrors } = useForm();
+const itemsErrors = ref<{ [key: string]: string | string[] }>(Object.assign({}));
 
 const { value: courier } = useField<string>('courier');
 const { value: note } = useField<string>('note');
@@ -147,7 +148,7 @@ const onAddItem = () => {
 
 const onRemoveItem = (index: number) => {
     if (items.value.length === 1) {
-        toast.error('Tidak bisa menghapus item terakhir');
+        toast.error('Minimal satu item');
         return;
     }
 
@@ -167,23 +168,24 @@ const save = handleSubmit(async (values) => {
         router.push({ name: 'admin.orders' });
     } catch (err: any) {
         if (err.response.status !== 422) throw err;
-        console.log();
-        setErrors({
-            ['items.0.aaa']: 'as',
-            b: 'c',
-        });
-        setErrors({
-            b: undefined,
-            ['items[0].aaa']: undefined,
-        });
+
+        itemsErrors.value = Object.assign({});
+        for (const [key, value] of Object.entries(err.response.data.errors)) {
+            if (!key.startsWith('items.')) continue;
+            itemsErrors.value[key] = value as string | string[];
+        }
+
+        const errorsWithoutItems = Object.fromEntries(Object.entries(err.response.data.errors).filter(([key]) => !key.startsWith('items')));
+
+        setErrors(errorsWithoutItems as any);
     }
 });
 </script>
 
 <template>
     <AppLayout>
-        <Page class="sm">
-            <TitleBar title="Tambah Alamat" :navigation="{ name: 'admin.addresses' }" />
+        <Page max-width="md">
+            <TitleBar title="Buat Pesanan" :navigation="{ name: 'admin.orders' }" />
 
             <BlockStack>
                 <Card>
@@ -287,35 +289,97 @@ const save = handleSubmit(async (values) => {
                             </TableHeader>
                             <TableBody>
                                 <template v-for="(row, key) in items" :key="key">
-                                    <TableRow>
-                                        <TableCell>
+                                    <TableRow
+                                        :class="{
+                                            'border-b-0':
+                                                itemsErrors[`items.${key}.name`] ||
+                                                itemsErrors[`items.${key}.value`] ||
+                                                itemsErrors[`items.${key}.quantity`] ||
+                                                itemsErrors[`items.${key}.weight`] ||
+                                                itemsErrors[`items.${key}.description`],
+                                        }"
+                                    >
+                                        <TableCell
+                                            :class="{
+                                                'pb-0':
+                                                    itemsErrors[`items.${key}.name`] ||
+                                                    itemsErrors[`items.${key}.value`] ||
+                                                    itemsErrors[`items.${key}.quantity`] ||
+                                                    itemsErrors[`items.${key}.weight`] ||
+                                                    itemsErrors[`items.${key}.description`],
+                                            }"
+                                        >
                                             <Input v-model="row.name" />
                                         </TableCell>
-                                        <TableCell>
+                                        <TableCell
+                                            :class="{
+                                                'pb-0':
+                                                    itemsErrors[`items.${key}.name`] ||
+                                                    itemsErrors[`items.${key}.value`] ||
+                                                    itemsErrors[`items.${key}.quantity`] ||
+                                                    itemsErrors[`items.${key}.weight`] ||
+                                                    itemsErrors[`items.${key}.description`],
+                                            }"
+                                        >
                                             <CurrencyInput v-model="row.value" />
                                         </TableCell>
-                                        <TableCell class="w-32">
+                                        <TableCell
+                                            :class="{
+                                                'w-32': true,
+                                                'pb-0':
+                                                    itemsErrors[`items.${key}.name`] ||
+                                                    itemsErrors[`items.${key}.value`] ||
+                                                    itemsErrors[`items.${key}.quantity`] ||
+                                                    itemsErrors[`items.${key}.weight`] ||
+                                                    itemsErrors[`items.${key}.description`],
+                                            }"
+                                        >
                                             <NumberFormat v-model="row.quantity" />
                                         </TableCell>
-                                        <TableCell class="w-32">
+                                        <TableCell
+                                            :class="{
+                                                'w-32': true,
+                                                'pb-0':
+                                                    itemsErrors[`items.${key}.name`] ||
+                                                    itemsErrors[`items.${key}.value`] ||
+                                                    itemsErrors[`items.${key}.quantity`] ||
+                                                    itemsErrors[`items.${key}.weight`] ||
+                                                    itemsErrors[`items.${key}.description`],
+                                            }"
+                                        >
                                             <NumberFormat v-model="row.weight" />
                                         </TableCell>
-                                        <TableCell class="w-8">
+                                        <TableCell class="w-8 p-0">
                                             <Button variant="link" @click="onRemoveItem(key)">
                                                 <Trash2Icon class="h-4 w-4" />
                                             </Button>
                                         </TableCell>
                                     </TableRow>
-                                    <TableRow>
-                                        <TableCell colspan="5"></TableCell>
+                                    <TableRow
+                                        v-if="
+                                            itemsErrors[`items.${key}.name`] ||
+                                            itemsErrors[`items.${key}.value`] ||
+                                            itemsErrors[`items.${key}.quantity`] ||
+                                            itemsErrors[`items.${key}.weight`] ||
+                                            itemsErrors[`items.${key}.description`]
+                                        "
+                                    >
+                                        <TableCell colspan="5" class="pt-0">
+                                            <InputError
+                                                :message="
+                                                    itemsErrors[`items.${key}.name`] ||
+                                                    itemsErrors[`items.${key}.value`] ||
+                                                    itemsErrors[`items.${key}.quantity`] ||
+                                                    itemsErrors[`items.${key}.weight`] ||
+                                                    itemsErrors[`items.${key}.description`]
+                                                "
+                                                class="mt-2"
+                                            />
+                                        </TableCell>
                                     </TableRow>
                                 </template>
                             </TableBody>
                         </Table>
-                        {{ errors }}
-                        <div v-for="(a, key) in errors" :key="a">
-                            {{ key.startsWith('items') ? key : key }}
-                        </div>
                         <Button variant="link" @click="onAddItem">Tambah Produk</Button>
                     </CardContent>
                 </Card>

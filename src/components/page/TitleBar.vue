@@ -34,8 +34,8 @@ const classes = cn(typeof props.navigation === 'string' ? "grid [grid-template-a
                         </span>
                         <span v-else>{{ title }}</span>
                     </h2>
-                    <div v-if="$slots['title-metadata']">
-                        <slot name="title-metadata" />
+                    <div v-if="$slots.titleMetadata">
+                        <slot name="titleMetadata" />
                     </div>
                 </div>
                 <div v-if="subtitle">

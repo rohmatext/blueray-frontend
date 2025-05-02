@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import { BlockStack, Page, TitleBar } from '@/components/page';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Table, TableBody, TableCell, TableEmpty, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
 import axios from '@/lib/axios';
-import DeleteAddressDialog from '@/pages/admin/adresses/DeleteAddressDialog.vue';
 import TableSkeleton from '@/pages/admin/users/skeleton/TableSkeleton.vue';
 import { useAuthStore } from '@/stores/auth';
 import { ApiResponse } from '@/types';
-import { Address } from '@/types/address';
+import { Shipment } from '@/types/shipment';
 import { useQuery, useQueryClient } from '@tanstack/vue-query';
 import { useHead } from '@unhead/vue';
 import { useDebounceFn } from '@vueuse/core';
@@ -25,12 +25,12 @@ useHead({
 
 const auth = useAuthStore();
 const search = ref<string>('');
-const addressSelected = ref<Address>();
+const shipmentSelected = ref<Shipment>();
 const queryClient = useQueryClient();
 
-const fetchAddreses = async (): Promise<Address[] | undefined> => {
+const fetchShipments = async (): Promise<Shipment[] | undefined> => {
     try {
-        const response = await axios.get<ApiResponse<Address[]>>('/api/addresses', {
+        const response = await axios.get<ApiResponse<Shipment[]>>('/api/shipments', {
             headers: {
                 Authorization: `Bearer ${auth.token}`,
             },
@@ -48,20 +48,20 @@ const fetchAddreses = async (): Promise<Address[] | undefined> => {
 
 const {
     isPending,
-    data: addresses,
+    data: shipments,
     isFetching,
 } = useQuery({
-    queryKey: ['addresses'],
-    queryFn: fetchAddreses,
+    queryKey: ['shipments'],
+    queryFn: fetchShipments,
 });
 
-const showDeleteDialog = (address: Address) => {
-    addressSelected.value = address;
+const showDeleteDialog = (shipment: Shipment) => {
+    shipmentSelected.value = shipment;
 };
 
 const onDeleteSuccess = (message: string) => {
     toast.success(message);
-    queryClient.invalidateQueries({ queryKey: ['addresses'] });
+    queryClient.invalidateQueries({ queryKey: ['shipments'] });
 };
 
 const onDeleteError = (message: string) => {
@@ -71,7 +71,7 @@ const onDeleteError = (message: string) => {
 watch(
     search,
     useDebounceFn(() => {
-        queryClient.invalidateQueries({ queryKey: ['addresses'] });
+        queryClient.invalidateQueries({ queryKey: ['shipments'] });
     }, 300),
 );
 </script>
@@ -92,23 +92,19 @@ watch(
                         <TableSkeleton v-if="isFetching || isPending" />
                         <Table v-else class="w-full">
                             <TableHeader>
-                                <TableHead class="hidden w-16 sm:table-cell">Pengirim</TableHead>
-                                <TableHead class="hidden w-16 sm:table-cell">Kontak</TableHead>
-                                <TableHead>Alamat</TableHead>
+                                <TableHead>Order ID</TableHead>
+                                <TableHead>Kurir</TableHead>
+                                <TableHead>Penerima</TableHead>
+                                <TableHead>Status</TableHead>
                                 <TableHead class="w-10"></TableHead>
                             </TableHeader>
                             <TableBody>
-                                <TableRow v-for="row in addresses" :key="row.id">
-                                    <TableCell class="hidden align-top sm:table-cell">{{ row.name }}</TableCell>
-                                    <TableCell class="hidden align-top sm:table-cell">{{ row.phone }}</TableCell>
-                                    <TableCell class="w-full align-top whitespace-normal">
-                                        <div class="font-medium sm:hidden">{{ row.name }} ({{ row.phone }})</div>
-                                        <div>
-                                            <span class="mr-1">
-                                                {{ row.full_address }}
-                                            </span>
-                                            <span v-if="row.note" class="text-muted-foreground">(Catatan: {{ row.note }})</span>
-                                        </div>
+                                <TableRow v-for="row in shipments" :key="row.id">
+                                    <TableCell class="whitespace-normal">{{ row.external_id }}</TableCell>
+                                    <TableCell class="whitespace-normal">{{ row.courier_company }}</TableCell>
+                                    <TableCell class="whitespace-normal">{{ row.destination_name }}</TableCell>
+                                    <TableCell class="w-10">
+                                        <Badge variant="secondary">{{ row.status }}</Badge>
                                     </TableCell>
                                     <TableCell class="w-10 align-top">
                                         <DropdownMenu :modal="false">
@@ -119,25 +115,18 @@ watch(
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                                 <DropdownMenuItem as-child>
-                                                    <RouterLink :to="{ name: 'admin.addresses.edit', params: { id: row.id } }">
-                                                        Edit alamat
-                                                    </RouterLink>
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem class="w-full" variant="destructive" as-child>
-                                                    <button @click="showDeleteDialog(row)">Hapus</button>
+                                                    <RouterLink :to="{ name: 'admin.orders.detail', params: { id: row.id } }"> Detail </RouterLink>
                                                 </DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </TableCell>
                                 </TableRow>
                             </TableBody>
-                            <TableEmpty v-if="addresses?.length === 0" :colspan="4">Belum ada alaman</TableEmpty>
+                            <TableEmpty v-if="shipments?.length === 0" :colspan="4">Belum ada alaman</TableEmpty>
                         </Table>
                     </CardContent>
                 </Card>
             </BlockStack>
         </Page>
     </AppLayout>
-
-    <DeleteAddressDialog @onSuccess="onDeleteSuccess" v-model="addressSelected" @onError="onDeleteError" />
 </template>
