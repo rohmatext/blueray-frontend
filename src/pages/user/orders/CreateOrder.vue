@@ -156,7 +156,6 @@ const onRemoveItem = (index: number) => {
 };
 
 const save = handleSubmit(async (values) => {
-    console.log(values);
     try {
         setErrors({});
         const { data } = await axios.post('/api/shipments', values, {
