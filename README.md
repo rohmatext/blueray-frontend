@@ -106,7 +106,7 @@ Frontend ini sepenuhnya terintegrasi dengan [Blueray API](https://github.com/roh
 ## 📄 Dokumentasi Tambahan
 
 Gunakan file Postman dari repo backend untuk memahami endpoint:  
-📁 `blueray-api.postman_collection.json`
+📁 [`blueray-api.postman_collection.json`](https://drive.google.com/file/d/1EvE7bRveQPjFcAMS_TNo_K8Yk2YRJf5M/view?usp=drive_link)
 
 ---
 
